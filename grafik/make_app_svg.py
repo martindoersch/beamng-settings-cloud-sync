@@ -1,5 +1,5 @@
-# Generates the app graphic for the repository page (v0.6: pause menu, profiles, sync status, undo, shared key bindings, restore mods)
-# Usage: python3 make_app_svg.py v0.6/svg  → v0.6/svg/2_app_en.svg; earlier versions are in git history
+# Generates the app graphic for the repository page (v0.7: pause menu, profiles, sync status, undo, shared key bindings, restore mods)
+# Usage: python3 make_app_svg.py v0.7/svg  → v0.7/svg/2_app_en.svg; earlier versions are in git history
 # PNG: render the SVG at 1920×1080, e.g. Chrome headless (see docs/NOTES.md)
 import sys, os
 
@@ -50,7 +50,7 @@ def svg():
          text(120, 176, 'Set it up once – then it works by itself, on PC and in cloud gaming', 32, False, GREY),
          # App window (the UI is English, as in the game)
          '<rect x="120" y="214" width="740" height="846" rx="16" fill="#05080c" fill-opacity="0.8" stroke="#ffffff" stroke-opacity="0.2" stroke-width="2"/>',
-         text(152, 274, 'Settings Cloud Sync', 32, True), text(472, 274, 'v0.6', 22, False, GREY),
+         text(152, 274, 'Settings Cloud Sync', 32, True), text(472, 274, 'v0.7', 22, False, GREY),
          '<rect x="776" y="238" width="56" height="48" rx="10" fill="#e8edf2"/>',
          f'<line x1="792" y1="262" x2="816" y2="262" stroke="{DARK}" stroke-width="5" stroke-linecap="round"/>',
          # Profile row: selection, Add, Rename, Delete

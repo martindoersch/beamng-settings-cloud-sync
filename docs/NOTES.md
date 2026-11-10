@@ -57,7 +57,7 @@ Console test on Boosteroid, BeamNG 0.40.4:
 
 16. v0.6 also (2026-11-10), from the backlog: shared key bindings (`sharedControls` in `config.json`, backup under `settingsCloudSync/shared/` with its own manifest, history and `sharedBackupId` in the local state), sync status, undo import (`settingsCloudSync_preImport/index.json`), rename/delete profiles (`renamed` map in `config.json`), "Restore mods" (`mods.json`, `core_repository.modSubscribe(tagid)`, button only), removal of stale files, exclusion of credential-like names and files > 512 KB, fixes for the double toast and the random seed. Logic tested with `tests/` (44 checks), **untested in game**, test plan in `docs/TEST.md`. Changes in `CHANGELOG.md`.
 
-17. ✔ **v0.6 tested locally (2026-11-10):** pause menu, sync status, undo, delete profile, auto-import/export work. Fixed afterwards: red `runtime.js` error (older backups select), name field in the pause menu not typable (`setCEFTyping`), dropdowns in the UI app replaced by ‹ › arrows. **Radial menu removed** (no labels, wrong icons in 0.40.5), the pause menu covers everything. Retest in `docs/TEST.md`.
+17. ✔ **v0.6 published (2026-11-10)** and tested with the published version: pause menu, sync status, undo, delete profile, auto-import/export work. Fixed in **v0.7** (2026-11-10, ready for upload, tag `v0.7`): red `runtime.js` error (older backups select), name field in the pause menu not typable (`setCEFTyping`), dropdowns in the UI app replaced by ‹ › arrows. **Radial menu removed** (no labels, wrong icons in 0.40.5), the pause menu covers everything. Retest in `docs/TEST.md`. The `v0.6` tag points to c3217fd, the source of the published zip.
 
 ## Backlog (2026-11-10)
 
@@ -67,6 +67,6 @@ Translations are not planned.
 - [x] Shared key bindings, undo import, sync status, rename/delete profiles
 - [x] Research mod list: possible via `core_repository.modSubscribe(tagid)`, details in `docs/RESEARCH.md`; built as button "Restore mods"
 - [x] `CHANGELOG.md`
-- [ ] Test v0.5 and v0.6 in game and on Boosteroid (`docs/TEST.md`), including whether `CloudSaveData` passes deletions on to Steam and the Steam Cloud quota for BeamNG
+- [ ] Test v0.7 in game and on Boosteroid (`docs/TEST.md`), including whether `CloudSaveData` passes deletions on to Steam and the Steam Cloud quota for BeamNG
 - [ ] GitHub releases with tags (from v0.6 on, the earlier versions have no commits of their own)
 - [ ] Short video/GIF for the repository page: Boosteroid session, activate the mod, settings are back

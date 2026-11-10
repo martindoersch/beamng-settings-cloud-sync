@@ -1,7 +1,7 @@
 {
   "name": "Settings Cloud Sync",
   "author": "Martin Dörsch",
-  "version": "0.6",
+  "version": "0.7",
   "description": "Sync key bindings and other settings across machines via Steam Cloud",
   "directive": "settingsCloudSync",
   "domElement": "<settings-cloud-sync></settings-cloud-sync>",

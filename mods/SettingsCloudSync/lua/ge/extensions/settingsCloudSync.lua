@@ -27,7 +27,7 @@
 
 local M = {}
 
-local version = '0.6' -- shown in the UI; keep in sync with app.json (build.sh checks this)
+local version = '0.7' -- shown in the UI; keep in sync with app.json (build.sh checks this)
 local logTag = 'settingsCloudSync'
 local cloudRoot = '/settings/cloud/settingsCloudSync/'
 local configPath = cloudRoot .. 'config.json' -- lives in the cloud so the option reaches a fresh machine

@@ -1,0 +1,57 @@
+Take your setup with you. BeamNG already syncs your main game settings via Steam Cloud, and even your own vehicle configs - but not your key bindings or graphics settings. This mod puts them into the game's Steam Cloud folder (settings/cloud), so you can restore them on another PC or on a cloud gaming service like Boosteroid.
+
+[ATTACH=full]1351974[/ATTACH]
+
+Playing on Boosteroid or another cloud gaming service?
+Every session starts like a fresh install - your settings AND your mods are gone, including this one (subscribing doesn't help). Set it up once, then each session takes 20 seconds:
+- Once: install the mod, press ESC and open Mods > Settings Cloud Sync in the pause menu (or add the UI app). Tick "Auto-import at game start" and "Auto-export changes", then click "Export".
+- Every new session: find "Settings Cloud Sync" in the repository and activate it. That's it - your key bindings and graphics settings are restored automatically, no restart needed. Changes you make are saved automatically within a minute.
+- Missing your other mods? Click "Restore mods" and the mod subscribes the repository mods you had active again (needs your BeamNG login).
+- Quit the game via the menu, so Steam can upload your settings.
+Tested on Boosteroid with BeamNG.drive 0.40.5.
+
+Where to find it
+- Pause menu: ESC > Mods > Settings Cloud Sync - all options in one place.
+- UI app: UI Apps > Add app > "Settings Cloud Sync". Use the "-" button to minimize it.
+The status line tells you at a glance whether your settings are in sync with the cloud backup or have local changes.
+
+[ATTACH=full]1351975[/ATTACH]
+
+How to use (two PCs)
+1. Open Settings Cloud Sync in the pause menu or the UI app.
+2. Tick what you want to sync and click "Export". Quit the game via the menu so Steam can upload the cloud folder.
+3. On the other machine: start the game, tick the same boxes and click "Import". Most settings apply right away.
+Imported something you didn't want? Click "Undo import" and your previous local settings are back. The cloud backup stays as it is.
+
+Auto-import
+Tick "Auto-import at game start" once. A fresh machine uses the profile that was active when you ticked it. From then on, the mod restores your backup automatically whenever the cloud backup is newer than the settings on that machine - ideal for cloud gaming, where every session starts fresh.
+
+Auto-export
+Tick "Auto-export changes" once. The mod then saves your settings by itself within a minute after you change something, and when you quit. For safety it only starts after this machine has imported or exported once, so a fresh session can never overwrite your backup with default settings.
+
+Profiles
+Playing on different machines with different hardware? Create a profile per machine (e.g. "Desktop", "Laptop", "Boosteroid") and pick it in the pause menu or the app. Each profile has its own backup, so your laptop never gets your desktop's graphics settings. The profile choice is stored only on that machine. Profiles can be renamed and deleted; your other machines follow a rename automatically.
+
+Shared key bindings
+Same controls everywhere, but different graphics? Tick "Share key bindings across profiles". Your key bindings then live in one backup for all profiles, while graphics and other settings stay per profile.
+
+Restore mods
+Every export also remembers which repository mods you had active. On a fresh cloud gaming session, click "Restore mods (n)" and the missing mods are subscribed and downloaded again, installed but inactive ones are activated. This only happens when you click - never automatically. You need to be logged in to your BeamNG account.
+
+Backup history
+Your 3 previous backups (per profile) are kept, each labelled with date and PC name. Something went wrong? Pick an older backup under "Older backups" and click "Restore". It becomes your current backup again, and the one you replaced moves into the history - nothing gets lost.
+Auto-export adds only one history entry per session.
+An export never replaces your saved key bindings with "nothing".
+
+What can be synced
+- Controls & key bindings, keyboard and controller (settings/inputmaps)
+- Other settings files in your user folder (graphics, UI layouts etc.)
+
+Privacy
+Only text files from your own user folder are copied into the game's own Steam Cloud folder; nothing leaves your Steam account. Files that look like logins or tokens (names with "token", "auth", "password", "session" etc.) and files over 512 KB are never copied.
+
+Console
+settingsCloudSync.exportAll() / settingsCloudSync.importAll() / settingsCloudSync.undoImport()
+settingsCloudSync.setProfile('Laptop') / settingsCloudSync.setSharedControls(true) / settingsCloudSync.restoreMods()
+
+Source code and changelog: https://github.com/martindoersch/beamng-settings-cloud-sync

@@ -11,11 +11,11 @@ Mod page: https://www.beamng.com/resources/settings-cloud-sync.40234/
 3. Fill in:
    - Title: `Settings Cloud Sync`
    - Category: "User Interface Apps"
-   - Version: `0.5`
+   - Version: `0.7`
    - Upload zip: `dist/settings_cloud_sync_martindoersch.zip`
    - Description (draft below)
-   - At least 2 images via "Upload Images": `grafik/v0.6/png/1_ablauf_en.png`, `grafik/v0.6/png/2_app_en.png`
-   - Upload the icon first (`grafik/v0.6/png/icon.png`); the server builds it into the mod itself
+   - At least 2 images via "Upload Images": `grafik/v0.7/png/1_ablauf_en.png`, `grafik/v0.7/png/2_app_en.png`
+   - Upload the icon first (`grafik/v0.7/png/icon.png`); the server builds it into the mod itself
    - **Note:** the mod icon is set separately (on the mod page via "Change Icon"), not as an image in the description. Otherwise the game shows a generic cube. ✔ Done on 2026-11-09
 4. Wait: moderators check every mod by hand, which can take a few working days. If there are problems, a private message explains what to change.
 5. Updates: button "Post resource update", **same zip name**, higher version, short change note
@@ -30,9 +30,9 @@ Mod page: https://www.beamng.com/resources/settings-cloud-sync.40234/
 - Must work with the current game version
 - Moderators may reject mods of insufficient quality
 
-## Description v0.6 (replace completely, after the v0.6 update is approved)
+## Description v0.7 (replace completely, after the v0.7 update is approved)
 
-Editor version (one line per paragraph, with the ATTACH image numbers): `docs/DESCRIPTION_v0.6_editor.txt`. Before pasting: update "Tested on Boosteroid with BeamNG.drive …" after the v0.6 test, and replace image 1351975 (app screenshot) with `grafik/v0.6/png/2_app_en.png` and put its new ATTACH number into the text. If the icon on the mod page is still the v0.5 one, change it via "Change Icon" to `grafik/v0.6/png/icon.png`.
+Editor version (one line per paragraph, with the ATTACH image numbers): `docs/DESCRIPTION_v0.7_editor.txt`. Before pasting: update "Tested on Boosteroid with BeamNG.drive …" after the v0.7 test, and replace image 1351975 (app screenshot) with `grafik/v0.7/png/2_app_en.png` and put its new ATTACH number into the text. If the icon on the mod page is still the v0.5 one, change it via "Change Icon" to `grafik/v0.7/png/icon.png`.
 
 ## Description v0.5 (replace completely)
 
@@ -107,7 +107,20 @@ Only text files from your own user folder are copied; nothing leaves your
 Steam account.
 ```
 
-## Change note v0.6 (for "Post resource update", after v0.5 is approved)
+## Change note v0.7 (for "Post resource update")
+
+```
+v0.7
+- The pause menu (ESC > Mods > Settings Cloud Sync) is now the place for
+  everything; the radial menu entries are gone.
+- Pause menu: you can type profile names, and "Restore" works right away
+  for the preselected older backup.
+- UI app: arrows instead of dropdowns for profile and older backups (the
+  dropdowns did not open in game).
+- Fixed a console error when opening the pause menu panel.
+```
+
+## Change note v0.6 (published 2026-11-10)
 
 ```
 v0.6
@@ -118,7 +131,6 @@ v0.6
 - Restore mods: remembers your active repository mods and subscribes them
   again on a fresh cloud gaming session - one click, needs your BeamNG login.
 - Rename and delete profiles.
-- The radial menu entries are gone, everything is in the pause menu now.
 - Files that look like logins or tokens are never copied.
 ```
 

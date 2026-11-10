@@ -1,4 +1,4 @@
-<p align="center"><img src="grafik/v0.6/png/icon_96.png" alt="Settings Cloud Sync icon" width="96"></p>
+<p align="center"><img src="grafik/v0.7/png/icon_96.png" alt="Settings Cloud Sync icon" width="96"></p>
 
 # Settings Cloud Sync for BeamNG.drive
 
@@ -6,7 +6,7 @@ Take your setup with you. BeamNG.drive already syncs your main game settings and
 
 **Install:** [Settings Cloud Sync in the BeamNG repository](https://www.beamng.com/resources/settings-cloud-sync.40234/)
 
-![How it works](grafik/v0.6/png/1_ablauf_en.png)
+![How it works](grafik/v0.7/png/1_ablauf_en.png)
 
 ## Features
 
@@ -16,13 +16,13 @@ Take your setup with you. BeamNG.drive already syncs your main game settings and
 - **Profiles** per machine (e.g. Desktop, Laptop, Boosteroid), each with its own backup
 - **Backup history**: the 3 previous backups per profile, labelled with date and PC name, restorable from the app or the pause menu
 - The app can be minimized
-- Settings panel in the **pause menu** under “Mods” (v0.6, in development)
+- Settings panel in the **pause menu** under “Mods” (v0.6)
 - **Shared key bindings** across all profiles, while graphics stay per profile (v0.6)
 - **Sync status** (“in sync” / “local changes”) and **Undo import** (v0.6)
 - **Restore mods**: remembers your active repository mods and subscribes them again in a fresh cloud gaming session, on your click (v0.6)
 - Rename and delete profiles (v0.6)
 
-![The app](grafik/v0.6/png/2_app_en.png)
+![The app](grafik/v0.7/png/2_app_en.png)
 
 ## Cloud gaming (Boosteroid etc.)
 
