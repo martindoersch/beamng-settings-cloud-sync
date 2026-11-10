@@ -1,0 +1,8 @@
+.DS_Store
+dist/
+Screenshots/
+other mods/
+grafik/old_icon/
+grafik/old_v0.4/
+grafik/*_de.svg
+grafik/png/*_de.png
