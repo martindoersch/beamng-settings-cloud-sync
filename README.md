@@ -14,8 +14,8 @@ Take your setup with you. BeamNG.drive already syncs your main game settings and
 - **Auto-import** at game start when the cloud backup is newer than the local settings – ideal for cloud gaming, where every session starts fresh
 - **Auto-export** within a minute after a change and when you quit (only after this machine has imported or exported once, so a fresh session never overwrites your backup with defaults)
 - **Profiles** per machine (e.g. Desktop, Laptop, Boosteroid), each with its own backup
-- **Backup history**: the 3 previous backups per profile, labelled with date and PC name, restorable from the app or the radial menu
-- Export, Import and Restore in the **radial menu**; the app can be minimized
+- **Backup history**: the 3 previous backups per profile, labelled with date and PC name, restorable from the app or the pause menu
+- The app can be minimized
 - Settings panel in the **pause menu** under “Mods” (v0.6, in development)
 - **Shared key bindings** across all profiles, while graphics stay per profile (v0.6)
 - **Sync status** (“in sync” / “local changes”) and **Undo import** (v0.6)

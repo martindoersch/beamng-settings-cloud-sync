@@ -65,7 +65,7 @@ How to use (two PCs)
    so Steam can upload the cloud folder.
 3. On the other machine: start the game, tick the same boxes and click
    "Import". Most settings apply right away.
-Export and Import are also in the radial menu under "Settings Cloud Sync",
+Everything is also in the pause menu (ESC > Mods > Settings Cloud Sync),
 so the app doesn't have to stay on screen. Use the "-" button to minimize it.
 
 Auto-import
@@ -82,14 +82,15 @@ session can never overwrite your backup with default settings.
 
 Profiles
 Playing on different machines with different hardware? Create a profile per
-machine (e.g. "Desktop", "Laptop", "Boosteroid") and pick it in the app. Each
+machine (e.g. "Desktop", "Laptop", "Boosteroid") and pick it in the pause
+menu or the app. Each
 profile has its own backup, so your laptop never gets your desktop's graphics
 settings. The profile choice is stored only on that machine.
 
 Backup history
 Your 3 previous backups (per profile) are kept, each labelled with date and
-PC name. Something went wrong? Pick an older backup in the app or in the
-radial menu ("Restore older backup"). It becomes your current backup again,
+PC name. Something went wrong? Pick an older backup under "Older backups"
+and click "Restore". It becomes your current backup again,
 and the one you replaced moves into the history - nothing gets lost.
 Auto-export adds only one history entry per session.
 An export never replaces your saved key bindings with "nothing".
@@ -117,6 +118,7 @@ v0.6
 - Restore mods: remembers your active repository mods and subscribes them
   again on a fresh cloud gaming session - one click, needs your BeamNG login.
 - Rename and delete profiles.
+- The radial menu entries are gone, everything is in the pause menu now.
 - Files that look like logins or tokens are never copied.
 ```
 

@@ -13,7 +13,6 @@ Tested on Boosteroid with BeamNG.drive 0.40.5.
 Where to find it
 - Pause menu: ESC > Mods > Settings Cloud Sync - all options in one place.
 - UI app: UI Apps > Add app > "Settings Cloud Sync". Use the "-" button to minimize it.
-- Radial menu: "Settings Cloud Sync" with Export, Import, Undo last import and Restore older backup.
 The status line tells you at a glance whether your settings are in sync with the cloud backup or have local changes.
 
 [ATTACH=full]1351975[/ATTACH]
@@ -31,7 +30,7 @@ Auto-export
 Tick "Auto-export changes" once. The mod then saves your settings by itself within a minute after you change something, and when you quit. For safety it only starts after this machine has imported or exported once, so a fresh session can never overwrite your backup with default settings.
 
 Profiles
-Playing on different machines with different hardware? Create a profile per machine (e.g. "Desktop", "Laptop", "Boosteroid") and pick it in the app. Each profile has its own backup, so your laptop never gets your desktop's graphics settings. The profile choice is stored only on that machine. Profiles can be renamed and deleted; your other machines follow a rename automatically.
+Playing on different machines with different hardware? Create a profile per machine (e.g. "Desktop", "Laptop", "Boosteroid") and pick it in the pause menu or the app. Each profile has its own backup, so your laptop never gets your desktop's graphics settings. The profile choice is stored only on that machine. Profiles can be renamed and deleted; your other machines follow a rename automatically.
 
 Shared key bindings
 Same controls everywhere, but different graphics? Tick "Share key bindings across profiles". Your key bindings then live in one backup for all profiles, while graphics and other settings stay per profile.
@@ -40,7 +39,7 @@ Restore mods
 Every export also remembers which repository mods you had active. On a fresh cloud gaming session, click "Restore mods (n)" and the missing mods are subscribed and downloaded again, installed but inactive ones are activated. This only happens when you click - never automatically. You need to be logged in to your BeamNG account.
 
 Backup history
-Your 3 previous backups (per profile) are kept, each labelled with date and PC name. Something went wrong? Pick an older backup in the app or in the radial menu ("Restore older backup"). It becomes your current backup again, and the one you replaced moves into the history - nothing gets lost.
+Your 3 previous backups (per profile) are kept, each labelled with date and PC name. Something went wrong? Pick an older backup under "Older backups" and click "Restore". It becomes your current backup again, and the one you replaced moves into the history - nothing gets lost.
 Auto-export adds only one history entry per session.
 An export never replaces your saved key bindings with "nothing".
 

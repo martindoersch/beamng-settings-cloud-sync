@@ -170,3 +170,23 @@ Logic is covered by `tests/` (mocked file system); in game it is about the real 
 7. **Restore mods:** with some repository mods active, export. Check `settings/cloud/settingsCloudSync/mods.json` (repo IDs, without this mod). New Boosteroid session: activate this mod, the app shows "Restore mods (n)", click → the mods download and are active. Not logged in: what happens? (the game should queue them)
 8. **Steam Cloud deletions:** after step 6, does the log show a deletion for the cloud (`deletedFiles.json`)? Is `keyboard.diff` gone in `BeamNG.drive.cloud` too?
 9. **Size limit:** the log shows `Skipped … too big` only for files over 512 KB, normally never
+
+## Results v0.6 (2026-11-10, local PC, BeamNG 0.40.5)
+
+- ✅ Pause menu: entry under Mods, all options visible, version "v0.6" shown
+- ✅ Sync status green/orange, undo import works (probably applied right away, not 100 % sure)
+- ✅ Delete profile: "Really?", then switches to Default
+- ✅ Auto-import/auto-export across two sessions
+- ❌ One red line: `CEF.MainGEUI#local://local/ui/ui-vue/dist/runtime.js:833 TypeError: Cannot read properties of undefined (reading 'value')`. Probably the "Older backups" select in the pause menu: `restoreId` was empty, so BngSelect showed the first entry, but Restore stayed disabled. **Fixed:** newest older backup is preselected, select config is null-safe
+- ❌ Pause menu: no typing into the name field (the game/menu navigation takes the keys). **Fix attempt:** `setCEFTyping(true)` while the field has focus, key events stopped
+- ❌ UI app: the profile dropdown does not open. **Fixed:** ‹ › arrows for profile and older backups
+- ❌ Radial menu: entries without labels, wrong icons (traffic light) and empty slots in its own category. **Removed**, the pause menu covers everything
+- Open: restore mods (item 7), Steam Cloud deletions (item 8)
+
+## Retest v0.6 after the fixes
+
+1. Console: no red `runtime.js` line when opening ESC > Mods > Settings Cloud Sync
+2. Pause menu: type a name, Add / Rename work. While typing, no game actions fire (e.g. camera, radial menu)
+3. Pause menu: "Older backups" shows the newest entry, Restore is clickable right away
+4. UI app: ‹ › switches the profile, ‹ › picks the older backup, Restore restores the shown one
+5. Radial menu: no "Settings Cloud Sync" category anymore

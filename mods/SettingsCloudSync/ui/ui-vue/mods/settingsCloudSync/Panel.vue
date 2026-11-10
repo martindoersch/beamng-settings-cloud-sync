@@ -7,7 +7,7 @@
       <label>Profile</label>
       <div class="row">
         <BngSelect :value="status.profile" :options="profileOptions" :config="selectConfig" @value-changed="setProfile" />
-        <input v-model="newProfile" type="text" placeholder="name" maxlength="32" />
+        <input v-model="newProfile" type="text" placeholder="name" maxlength="32" @focus="setTyping(true)" @blur="setTyping(false)" @keydown.stop @keyup.stop />
         <BngButton :disabled="!newProfile" @click="addProfile">Add</BngButton>
         <BngButton :disabled="!newProfile || isDefault" @click="renameProfile">Rename</BngButton>
         <BngButton :disabled="isDefault" @click="deleteProfile">{{ confirmDelete ? "Really?" : "Delete" }}</BngButton>
@@ -85,7 +85,8 @@ const categories = computed(() => asList(status.value.categories))
 const history = computed(() => asList(status.value.history))
 const profileOptions = computed(() => asList(status.value.profiles).map(p => ({ value: p, label: p })))
 const historyOptions = computed(() => history.value.map(b => ({ value: b.id, label: b.label })))
-const selectConfig = { value: option => option.value, label: option => option.label }
+// Null-safe: BngSelect may call these without an option
+const selectConfig = { value: option => option?.value, label: option => option?.label ?? "" }
 const isDefault = computed(() => status.value.profile === "Default")
 
 const syncText = computed(() => {
@@ -126,6 +127,8 @@ const refresh = async () => {
   const data = await call("getStatus()")
   if (!data) { error.value = error.value || "Settings Cloud Sync is unavailable. Restart BeamNG after updating the mod."; return }
   status.value = data
+  // Preselect the newest older backup, so the shown entry is also the one Restore uses
+  if (!history.value.some(b => b.id === restoreId.value)) restoreId.value = history.value[0]?.id || ""
   for (const c of asList(data.categories)) {
     if (selection.value[c.id] === undefined) selection.value[c.id] = true
   }
@@ -163,18 +166,20 @@ const deleteProfile = async () => {
   await act('deleteProfile("' + cleanName(status.value.profile) + '")')
 }
 
+// While the name field has focus, keys go to the field instead of the game and the menu navigation
+const setTyping = on => runRaw("if setCEFTyping then setCEFTyping(" + on + ") end").catch(() => {})
+
 // Restores the backup and makes it the current one; the previous one moves into the history
 const restoreBackup = async () => {
   const id = String(restoreId.value || "").replace(/[^A-Za-z0-9-]/g, "")
   if (!id) return
-  restoreId.value = ""
   await act('restoreBackup("' + id + '")')
 }
 
 // Keeps the sync state current while the panel is open
 let timer = null
 onMounted(() => { refresh(); timer = setInterval(refresh, 15000) })
-onUnmounted(() => clearInterval(timer))
+onUnmounted(() => { clearInterval(timer); setTyping(false) })
 </script>
 
 <style scoped>

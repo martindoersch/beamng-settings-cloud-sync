@@ -9,7 +9,7 @@ angular.module('beamng.apps')
         '</div>' +
         '<div ng-show="!collapsed">' +
         '<div style="margin-bottom:6px;">Profile ' +
-          '<select ng-model="profile" ng-options="p for p in profiles" ng-change="setProfile(profile)"></select> ' +
+          '<button ng-click="stepProfile(-1)" ng-disabled="profiles.length < 2">‹</button> <b>{{profile}}</b> <button ng-click="stepProfile(1)" ng-disabled="profiles.length < 2">›</button> ' +
           '<input type="text" ng-model="newProfile" placeholder="name" maxlength="32" style="width:80px;"> ' +
           '<button ng-click="addProfile()" ng-disabled="!newProfile" title="Create a new profile with this name">Add</button> ' +
           '<button ng-click="renameProfile()" ng-disabled="!newProfile || profile === \'Default\'" title="Rename the selected profile">Rename</button> ' +
@@ -30,8 +30,7 @@ angular.module('beamng.apps')
         '<div style="margin-top:2px; opacity:0.6;">Current: {{current || "no backup yet"}}</div>' +
         '<div style="opacity:0.6;" ng-show="sharedCurrent">{{sharedCurrent}}</div>' +
         '<div style="margin-top:4px;" ng-show="history.length">Older ' +
-          '<select ng-model="restore.id" ng-options="b.id as b.label for b in history" style="max-width:190px;">' +
-            '<option value="">choose backup</option></select> ' +
+          '<button ng-click="stepRestore(-1)" ng-disabled="history.length < 2">‹</button> {{restoreLabel()}} <button ng-click="stepRestore(1)" ng-disabled="history.length < 2">›</button> ' +
           '<button ng-click="restoreBackup()" ng-disabled="!restore.id">Restore</button>' +
         '</div>' +
         '<label style="display:block; margin-top:6px;">' +
@@ -51,7 +50,7 @@ angular.module('beamng.apps')
           '<button ng-click="call(\'restoreMods()\')">Restore mods ({{modCount}})</button>' +
           '<div style="opacity:0.6;">subscribes the repository mods that were active at the export of {{modsCreated}}; needs the BeamNG login</div>' +
         '</div>' +
-        '<div style="opacity:0.6; margin-top:6px;">Tip: also in the pause menu under Mods, Export and Import in the radial menu.</div>' +
+        '<div style="opacity:0.6; margin-top:6px;">Tip: also in the pause menu (ESC) under Mods.</div>' +
         '</div>' +
       '</div>',
     replace: true,
@@ -105,6 +104,10 @@ angular.module('beamng.apps')
             scope.modCount = data.modCount || 0
             scope.modsCreated = data.modsCreated
             scope.history = Array.isArray(data.history) ? data.history : []
+            // Preselect the newest older backup, so the shown entry is also the one Restore uses
+            if (!scope.history.some(function (b) { return b.id === scope.restore.id })) {
+              scope.restore.id = scope.history.length ? scope.history[0].id : ''
+            }
             scope.categories.forEach(function (c) {
               if (scope.selection[c.id] === undefined) scope.selection[c.id] = true
             })
@@ -150,6 +153,26 @@ angular.module('beamng.apps')
         scope.call('setProfile("' + cleanName(name) + '")', 300)
       }
 
+      // Arrows instead of a <select>: its dropdown does not open in the game UI
+      function step (list, current, dir) {
+        var i = list.indexOf(current)
+        return list[(i + dir + list.length) % list.length]
+      }
+
+      scope.stepProfile = function (dir) {
+        if (scope.profiles.length > 1) scope.setProfile(step(scope.profiles, scope.profile, dir))
+      }
+
+      scope.stepRestore = function (dir) {
+        var ids = scope.history.map(function (b) { return b.id })
+        if (ids.length > 1) scope.restore.id = step(ids, scope.restore.id, dir)
+      }
+
+      scope.restoreLabel = function () {
+        var b = scope.history.filter(function (h) { return h.id === scope.restore.id })[0]
+        return b ? b.label : ''
+      }
+
       scope.addProfile = function () {
         scope.setProfile(scope.newProfile)
         scope.newProfile = ''
@@ -175,7 +198,6 @@ angular.module('beamng.apps')
       scope.restoreBackup = function () {
         var id = String(scope.restore.id || '').replace(/[^A-Za-z0-9-]/g, '')
         if (!id) return
-        scope.restore.id = ''
         scope.call('restoreBackup("' + id + '")', 800)
       }
 

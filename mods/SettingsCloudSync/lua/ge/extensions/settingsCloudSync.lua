@@ -60,7 +60,6 @@ local autoImportPending = false
 local autoExportTimer = 0
 local baseline = nil -- file contents after the last import/export, for auto-export
 local archivedThisSession = {} -- per unit: automatic exports add a history entry only once per session
-local quickAccessAdded = false
 local warnedLarge = {} -- warn about a too big file only once per session
 
 math.randomseed(os.time()) -- LuaJIT otherwise repeats the same numbers in every session
@@ -930,40 +929,6 @@ local function getStatus()
   return result
 end
 
--- Export/import in the quick access (radial) menu, so the UI app does not have to stay on screen.
--- Uses the profile and all categories of this machine. Untested: core_quickAccess API in 0.40.x
-local function addQuickAccessEntries()
-  if quickAccessAdded then return end
-  if not core_quickAccess or not core_quickAccess.addEntry then
-    log('D', logTag, 'core_quickAccess not available yet')
-    return
-  end
-  quickAccessAdded = true
-  local ok, err = pcall(function()
-    core_quickAccess.addEntry({ level = '/', generator = function(entries)
-      table.insert(entries, { title = 'Settings Cloud Sync', icon = 'cloud_upload', ['goto'] = '/settingsCloudSync/' })
-    end })
-    core_quickAccess.addEntry({ level = '/settingsCloudSync/', generator = function(entries)
-      table.insert(entries, { title = 'Export settings', icon = 'cloud_upload',
-        onSelect = function() exportAll() return { 'hide' } end })
-      table.insert(entries, { title = 'Import settings', icon = 'cloud_download',
-        onSelect = function() importAll() return { 'hide' } end })
-      if readUndo() then
-        table.insert(entries, { title = 'Undo last import', icon = 'undo',
-          onSelect = function() undoImport() return { 'hide' } end })
-      end
-      table.insert(entries, { title = 'Restore older backup', icon = 'history', ['goto'] = '/settingsCloudSync/restore/' })
-    end })
-    core_quickAccess.addEntry({ level = '/settingsCloudSync/restore/', generator = function(entries)
-      for _, entry in ipairs(allHistory()) do
-        table.insert(entries, { title = entry.label, icon = 'history',
-          onSelect = function() restoreBackup(entry.id) return { 'hide' } end })
-      end
-    end })
-  end)
-  if not ok then log('E', logTag, 'Quick access entries failed: ' .. tostring(err)) end
-end
-
 local function onExtensionLoaded()
   autoImportPending = true
 end
@@ -972,7 +937,6 @@ end
 local function onUpdate(dtReal)
   if autoImportPending then
     autoImportPending = false
-    addQuickAccessEntries()
     autoImportIfNeeded()
     if not baseline and readConfig().autoExport then baseline = snapshot() end
     return
@@ -986,10 +950,6 @@ end
 -- Check soon after settings change (the file may only be written afterwards)
 local function onSettingsChanged()
   autoExportTimer = math.max(autoExportTimer, autoExportInterval - 5)
-end
-
-local function onClientStartMission()
-  addQuickAccessEntries()
 end
 
 -- Save the last changes on exit
@@ -1013,7 +973,6 @@ M.getStatus = getStatus
 M.onExtensionLoaded = onExtensionLoaded
 M.onUpdate = onUpdate
 M.onSettingsChanged = onSettingsChanged
-M.onClientStartMission = onClientStartMission
 M.onExit = onExit
 
 return M

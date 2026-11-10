@@ -31,7 +31,7 @@ def callout(n, fromY, cy, title, lines):
         out.append(text(1030, cy + 58 + i * 40, l, 30, False, GREY))
     return ''.join(out)
 
-C = [('Pause menu, app or radial menu', ['ESC > Mods > Settings Cloud Sync –', 'the UI app is optional']),
+C = [('Pause menu or UI app', ['ESC > Mods > Settings Cloud Sync –', 'the UI app is optional']),
      ('Profiles per machine', ['Add, rename, delete – each machine', 'keeps its own graphics settings']),
      ('Sync status and undo', ['Green means it is in the cloud backup;', 'undo puts your old settings back']),
      ('Shared key bindings, auto-sync', ['Same controls in every profile,', 'restored and saved by itself']),

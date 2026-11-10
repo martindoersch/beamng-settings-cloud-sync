@@ -57,6 +57,8 @@ Console test on Boosteroid, BeamNG 0.40.4:
 
 16. v0.6 also (2026-11-10), from the backlog: shared key bindings (`sharedControls` in `config.json`, backup under `settingsCloudSync/shared/` with its own manifest, history and `sharedBackupId` in the local state), sync status, undo import (`settingsCloudSync_preImport/index.json`), rename/delete profiles (`renamed` map in `config.json`), "Restore mods" (`mods.json`, `core_repository.modSubscribe(tagid)`, button only), removal of stale files, exclusion of credential-like names and files > 512 KB, fixes for the double toast and the random seed. Logic tested with `tests/` (44 checks), **untested in game**, test plan in `docs/TEST.md`. Changes in `CHANGELOG.md`.
 
+17. ✔ **v0.6 tested locally (2026-11-10):** pause menu, sync status, undo, delete profile, auto-import/export work. Fixed afterwards: red `runtime.js` error (older backups select), name field in the pause menu not typable (`setCEFTyping`), dropdowns in the UI app replaced by ‹ › arrows. **Radial menu removed** (no labels, wrong icons in 0.40.5), the pause menu covers everything. Retest in `docs/TEST.md`.
+
 ## Backlog (2026-11-10)
 
 Translations are not planned.
