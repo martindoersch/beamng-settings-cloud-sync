@@ -48,3 +48,14 @@ User folder on Windows (default): `%LOCALAPPDATA%\BeamNG\BeamNG.drive\current`
 - Lua extension: `lua/ge/extensions/<name>.lua` returns a table `M`
 - UI app (buttons in game): `ui/modules/apps/<name>/`
 - Docs: https://documentation.beamng.com/modding/programming/extensions/
+
+## Repository API: subscribing mods from Lua (2026-11-10)
+
+Research for "Restore mods" (web, not tested in game). Confirmed for 0.36 in the game Lua mirrored on GitHub ([repository.lua](https://github.com/KRtkovo-eu-AI/BeamNG_FreeMode_Inventory/blob/main/.beamng/orig-0.36/lua/ge/extensions/core/repository.lua), [modmanager.lua](https://github.com/KRtkovo-eu-AI/BeamNG_FreeMode_Inventory/blob/main/.beamng/orig-0.36/lua/ge/extensions/core/modmanager.lua)), probably the same in 0.40:
+
+- `core_repository.modSubscribe(mod_id, useOptOut)`: calls the API `s2/v4/modSubscribe/<id>`, the mod goes into the normal download queue and is active afterwards. Without the BeamNG login (`Engine.Online.isAuthenticated()`) the ID waits in a queue until online.
+- `mod_id` is the **tagid** ("Unique ID" on the mod page, ours: `MTQ6X9OL2`), not the number in the URL. The UI calls `core_repository.modSubscribe(modData.tagid)`.
+- `core_modmanager.getMods()` returns `{modname = entry}` with `entry.active`, `entry.modID` and `entry.modData.tagid` for repository mods. `core_modmanager.activateModId(modID)` activates an installed mod.
+- Prior art: [DependNG.resolve](https://github.com/Toemmsen96/DependNG.resolve) and [RLS RepoModManager](https://github.com/RLS-Modding/RepoModManager) use `modSubscribe`; RepoModManager limits itself to 40 subscriptions per 60 s so the repository does not block.
+- No official rule found for or against mods that install other mods. Forum users recommend asking the player first, so v0.6 only does it on a button click.
+- Open: whether a Boosteroid session keeps the BeamNG login.

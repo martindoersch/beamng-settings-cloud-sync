@@ -14,8 +14,8 @@ Mod page: https://www.beamng.com/resources/settings-cloud-sync.40234/
    - Version: `0.5`
    - Upload zip: `dist/settings_cloud_sync_martindoersch.zip`
    - Description (draft below)
-   - At least 2 images via "Upload Images": `grafik/png/1_ablauf_en.png`, `grafik/png/2_app_en.png`
-   - Upload the icon first (`grafik/png/icon.png`); the server builds it into the mod itself
+   - At least 2 images via "Upload Images": `grafik/v0.6/png/1_ablauf_en.png`, `grafik/v0.6/png/2_app_en.png`
+   - Upload the icon first (`grafik/v0.6/png/icon.png`); the server builds it into the mod itself
    - **Note:** the mod icon is set separately (on the mod page via "Change Icon"), not as an image in the description. Otherwise the game shows a generic cube. ✔ Done on 2026-11-09
 4. Wait: moderators check every mod by hand, which can take a few working days. If there are problems, a private message explains what to change.
 5. Updates: button "Post resource update", **same zip name**, higher version, short change note
@@ -29,6 +29,10 @@ Mod page: https://www.beamng.com/resources/settings-cloud-sync.40234/
 - Do not overwrite game files ✔ (own file names only)
 - Must work with the current game version
 - Moderators may reject mods of insufficient quality
+
+## Description v0.6 (replace completely, after the v0.6 update is approved)
+
+Editor version (one line per paragraph, with the ATTACH image numbers): `docs/DESCRIPTION_v0.6_editor.txt`. Before pasting: update "Tested on Boosteroid with BeamNG.drive …" after the v0.6 test, and replace image 1351975 (app screenshot) with `grafik/v0.6/png/2_app_en.png` and put its new ATTACH number into the text. If the icon on the mod page is still the v0.5 one, change it via "Change Icon" to `grafik/v0.6/png/icon.png`.
 
 ## Description v0.5 (replace completely)
 
@@ -100,6 +104,20 @@ Console: settingsCloudSync.exportAll() / settingsCloudSync.importAll()
          settingsCloudSync.setProfile('Laptop')
 Only text files from your own user folder are copied; nothing leaves your
 Steam account.
+```
+
+## Change note v0.6 (for "Post resource update", after v0.5 is approved)
+
+```
+v0.6
+- Settings in the pause menu under Mods > Settings Cloud Sync.
+- Share your key bindings across all profiles, graphics stay per profile.
+- Sync status shows whether your settings are in the cloud backup.
+- Undo import: puts back your local settings from before the last import.
+- Restore mods: remembers your active repository mods and subscribes them
+  again on a fresh cloud gaming session - one click, needs your BeamNG login.
+- Rename and delete profiles.
+- Files that look like logins or tokens are never copied.
 ```
 
 ## Change note v0.5 (for "Post resource update", includes v0.4)

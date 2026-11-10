@@ -1,4 +1,4 @@
-<p align="center"><img src="grafik/png/icon_96.png" alt="Settings Cloud Sync icon" width="96"></p>
+<p align="center"><img src="grafik/v0.6/png/icon_96.png" alt="Settings Cloud Sync icon" width="96"></p>
 
 # Settings Cloud Sync for BeamNG.drive
 
@@ -6,7 +6,7 @@ Take your setup with you. BeamNG.drive already syncs your main game settings and
 
 **Install:** [Settings Cloud Sync in the BeamNG repository](https://www.beamng.com/resources/settings-cloud-sync.40234/)
 
-![How it works](grafik/png/1_ablauf_en.png)
+![How it works](grafik/v0.6/png/1_ablauf_en.png)
 
 ## Features
 
@@ -17,8 +17,12 @@ Take your setup with you. BeamNG.drive already syncs your main game settings and
 - **Backup history**: the 3 previous backups per profile, labelled with date and PC name, restorable from the app or the radial menu
 - Export, Import and Restore in the **radial menu**; the app can be minimized
 - Settings panel in the **pause menu** under “Mods” (v0.6, in development)
+- **Shared key bindings** across all profiles, while graphics stay per profile (v0.6)
+- **Sync status** (“in sync” / “local changes”) and **Undo import** (v0.6)
+- **Restore mods**: remembers your active repository mods and subscribes them again in a fresh cloud gaming session, on your click (v0.6)
+- Rename and delete profiles (v0.6)
 
-![The app](grafik/png/2_app_en.png)
+![The app](grafik/v0.6/png/2_app_en.png)
 
 ## Cloud gaming (Boosteroid etc.)
 
@@ -34,6 +38,9 @@ Every session starts like a fresh install – settings *and* mods are gone, incl
 settingsCloudSync.exportAll()
 settingsCloudSync.importAll()
 settingsCloudSync.setProfile('Laptop')
+settingsCloudSync.undoImport()
+settingsCloudSync.setSharedControls(true)
+settingsCloudSync.restoreMods()
 ```
 
 ## Repository layout
@@ -43,7 +50,8 @@ settingsCloudSync.setProfile('Laptop')
 | `mods/SettingsCloudSync/` | Mod source: Lua extension (`lua/ge/extensions/`), UI app (`ui/modules/apps/`), pause menu panel (`ui/ui-vue/mods/`) |
 | `mods/CloudSyncTest/` | Diagnostic mod used during development (not published) |
 | `build.sh` | Packs the mods as zip files into `dist/` |
-| `grafik/` | Icon and repository graphics (SVG + PNG) |
+| `tests/` | Logic tests of the Lua extension against a mocked BeamNG (Node.js + fengari) |
+| `grafik/` | Icon and repository graphics per version (`v0.x/svg`, `v0.x/png`) |
 | `docs/` | Development notes, research and test plans |
 
 ## Build
@@ -54,9 +62,16 @@ settingsCloudSync.setProfile('Laptop')
 
 Creates `dist/settings_cloud_sync_martindoersch.zip`. Drop it into your BeamNG `mods` folder to test.
 
+Logic tests without the game (Node.js needed):
+
+```sh
+(cd tests && npm install fengari@0.1.4)
+node tests/run.js tests/settingsCloudSync_test.lua mods/SettingsCloudSync/lua/ge/extensions/settingsCloudSync.lua
+```
+
 ## Privacy
 
-Only text files from your own BeamNG user folder are copied into the game's own Steam Cloud folder. Nothing leaves your Steam account.
+Only text files from your own BeamNG user folder are copied into the game's own Steam Cloud folder. Nothing leaves your Steam account. Files whose path contains words like `token`, `auth`, `password` or `session` are never copied, nor files over 512 KB.
 
 ## License
 

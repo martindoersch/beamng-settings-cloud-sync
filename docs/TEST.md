@@ -156,3 +156,17 @@ Only testable via the repository. After each step check the console (^) for red 
 5. UI app next to it: does it show the same values (selection, options)?
 6. Version: the app title (also when collapsed) and the pause menu heading show a small "v0.6"
 7. If the entry is missing: filter the console (`~`) for `settingsCloudSync` and `ui_pause_actions` and take a screenshot
+
+## Test v0.6: new functions from the backlog
+
+Logic is covered by `tests/` (mocked file system); in game it is about the real API and the UI. Console filter `settingsCloudSync`, no red lines.
+
+1. **Sync status:** after an export the app shows a green "In sync with the cloud backup". Change the resolution: within 15 s an orange "Local changes …"
+2. **Undo import:** change a key, Import → the old key is back. "Undo import" appears, click it → the changed key is back, the button disappears. Do the key bindings apply right away or only after a restart?
+3. **Radial menu:** Settings Cloud Sync → "Undo last import" only appears after an import
+4. **Shared key bindings:** tick the option. Folder `settings/cloud/settingsCloudSync/shared/` with `manifest.json` appears. Switch to a second profile, change a key and export → the key ends up in `shared/`, the profile only has other settings. Back to Default, Import → the new key is there, the graphics of Default stay
+5. **Rename:** select a profile, type a new name, Rename → the folder under `profiles/` has the new name. **Delete:** first click shows "Really?", second deletes; the machine switches to Default
+6. **Stale files:** reset all key bindings (so `keyboard.diff` disappears) but keep another input map, export → `keyboard.diff` is gone from `…/files/settings/inputmaps/`
+7. **Restore mods:** with some repository mods active, export. Check `settings/cloud/settingsCloudSync/mods.json` (repo IDs, without this mod). New Boosteroid session: activate this mod, the app shows "Restore mods (n)", click → the mods download and are active. Not logged in: what happens? (the game should queue them)
+8. **Steam Cloud deletions:** after step 6, does the log show a deletion for the cloud (`deletedFiles.json`)? Is `keyboard.diff` gone in `BeamNG.drive.cloud` too?
+9. **Size limit:** the log shows `Skipped … too big` only for files over 512 KB, normally never

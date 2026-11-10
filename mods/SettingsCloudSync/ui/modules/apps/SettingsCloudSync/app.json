@@ -5,5 +5,5 @@
   "description": "Sync key bindings and other settings across machines via Steam Cloud",
   "directive": "settingsCloudSync",
   "domElement": "<settings-cloud-sync></settings-cloud-sync>",
-  "css": { "width": "320px", "height": "390px", "top": "120px", "left": "20px" }
+  "css": { "width": "320px", "height": "500px", "top": "120px", "left": "20px" }
 }
