@@ -14,7 +14,7 @@ Goal: take menu settings, key bindings and custom vehicle configs along via Stea
 | `CHANGELOG.md` | Changes per version |
 | `docs/TEST.md` | Console tests and results |
 | `docs/REPOSITORY.md` | Repository submission and description text |
-| `grafik/` | Icon (512×512) and repository graphics per version: `v0.x/svg/` (editable in Affinity) and `v0.x/png/`. Each version folder holds the full set used for that upload. App graphic: `python3 grafik/make_app_svg.py grafik/v0.6/svg`, PNG via Chrome headless at 1920×1080. English only |
+| `grafik/` | Icon (512×512) and repository graphics per version: `v0.x/svg/` (editable in Affinity) and `v0.x/png/`. Each version folder holds the full set used for that upload. Feature graphic (from v0.8, concept tiles instead of the UI app): `python3 grafik/make_features_svg.py grafik/v0.8/svg`, PNG via Chrome headless at 1920×1080. `3_ingame_en.jpg` is a real in-game screenshot (pause menu, v0.7), scaled to 1920×1080. English only |
 | `Screenshots/` | Test results (local only, not in Git) |
 
 ## Status (2026-11-06)
@@ -59,6 +59,9 @@ Console test on Boosteroid, BeamNG 0.40.4:
 
 17. ✔ **v0.6 published (2026-11-10)** and tested with the published version: pause menu, sync status, undo, delete profile, auto-import/export work. Fixed in **v0.7** (2026-11-10, ready for upload, tag `v0.7`): red `runtime.js` error (older backups select), name field in the pause menu not typable (`setCEFTyping`), dropdowns in the UI app replaced by ‹ › arrows. **Radial menu removed** (no labels, wrong icons in 0.40.5), the pause menu covers everything. Retest in `docs/TEST.md`. The `v0.6` tag points to c3217fd, the source of the published zip.
 
+18. ✔ **v0.7 published (2026-11-11).** An update arriving during a running session leaves a mix: the mod manager shows 0.7, the radial entry is gone, but the panel still says v0.6. After restarting the game everything showed v0.7. Open: in v0.6 no mods came back (see backlog). Screenshots: the mod list exists ("Restore mods (1)", saved 2026-11-10 19:31), only one copy of the mod in `/mods/repo/`. The export on 2026-11-11 did not renew the list, so no other repository mods were active at that time. Restoring is button-only by design.
+19. v0.8 (2026-11-11, **uploaded as an update, waiting for approval**): **mod list updates itself** (every 60 s and on exit, merge rule: add active, remove switched off, keep not installed) and **machine name** (`machineName` in the local state, `freshMachineName` in `config.json` for fresh machines without local state, e.g. Boosteroid; on Boosteroid `COMPUTERNAME` is empty, so it showed "unknown PC"). Logic tested (57 checks), **untested in game**, test plan in `docs/TEST.md`. Known limit: a mod that is uninstalled (not just switched off) stays in the list.
+
 ## Backlog (2026-11-10)
 
 Translations are not planned.
@@ -69,4 +72,5 @@ Translations are not planned.
 - [x] `CHANGELOG.md`
 - [ ] Test v0.7 in game and on Boosteroid (`docs/TEST.md`), including whether `CloudSaveData` passes deletions on to Steam and the Steam Cloud quota for BeamNG
 - [ ] GitHub releases with tags (from v0.6 on, the earlier versions have no commits of their own)
+- [ ] Mods did not come back in v0.6: probably just not clicked (button-only). v0.8 keeps the list current; test "Restore mods" on Boosteroid, then decide whether it goes back into the description and graphic
 - [ ] Short video/GIF for the repository page: Boosteroid session, activate the mod, settings are back

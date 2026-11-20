@@ -17,6 +17,18 @@
     </div>
 
     <div class="block">
+      <label>This machine: {{ status.machineName }}</label>
+      <div class="row">
+        <input v-model="newMachine" type="text" placeholder="name" maxlength="32" @focus="setTyping(true)" @blur="setTyping(false)" @keydown.stop @keyup.stop />
+        <BngButton :disabled="!newMachine" @click="setMachineName">Set name</BngButton>
+      </div>
+      <label class="check">
+        <input type="checkbox" :checked="freshUsesThis" :disabled="!status.ownMachineName" @change="setOption('setFreshMachineName', $event.target.checked)" /> Fresh machines use this name
+        <small>cloud gaming sessions have no name of their own; shown with backups</small>
+      </label>
+    </div>
+
+    <div class="block">
       <label v-for="c in categories" :key="c.id" class="check">
         <input type="checkbox" v-model="selection[c.id]" @change="saveSelection" /> {{ c.label }}
         <small>{{ c.shared ? "shared by all profiles, " : "" }}{{ c.backupDate ? c.backupCount + (c.backupCount === 1 ? " file, " : " files, ") + c.backupDate : "no backup yet" }}</small>
@@ -59,7 +71,7 @@
       <div class="row">
         <BngButton @click="act('restoreMods()')">Restore mods ({{ status.modCount }})</BngButton>
       </div>
-      <small>subscribes the repository mods that were active at the export of {{ status.modsCreated }}; needs the BeamNG login</small>
+      <small>subscribes the repository mods you had active (list updated {{ status.modsCreated }}); needs the BeamNG login</small>
     </div>
   </section>
 </template>
@@ -75,6 +87,7 @@ const storageKey = "settingsCloudSync.selection"
 const error = ref("")
 const status = ref({})
 const newProfile = ref("")
+const newMachine = ref("")
 const restoreId = ref("")
 const confirmDelete = ref(false)
 const selection = ref(readSelection())
@@ -87,6 +100,7 @@ const profileOptions = computed(() => asList(status.value.profiles).map(p => ({ 
 const historyOptions = computed(() => history.value.map(b => ({ value: b.id, label: b.label })))
 // Null-safe: BngSelect may call these without an option
 const selectConfig = { value: option => option?.value, label: option => option?.label ?? "" }
+const freshUsesThis = computed(() => !!status.value.ownMachineName && status.value.freshMachineName === status.value.ownMachineName)
 const isDefault = computed(() => status.value.profile === "Default")
 
 const syncText = computed(() => {
@@ -146,6 +160,11 @@ const setProfile = async name => {
   if (!name) return
   confirmDelete.value = false
   await act('setProfile("' + name + '")')
+}
+
+const setMachineName = async () => {
+  await act('setMachineName("' + cleanName(newMachine.value) + '")')
+  newMachine.value = ""
 }
 
 const addProfile = async () => { await setProfile(newProfile.value); newProfile.value = "" }

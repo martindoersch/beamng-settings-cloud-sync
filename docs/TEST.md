@@ -192,3 +192,14 @@ Logic is covered by `tests/` (mocked file system); in game it is about the real 
 3. Pause menu: "Older backups" shows the newest entry, Restore is clickable right away
 4. UI app: ‹ › switches the profile, ‹ › picks the older backup, Restore restores the shown one
 5. Radial menu: no "Settings Cloud Sync" category anymore
+
+## Test v0.8
+
+0. App title and pause menu heading show "v0.8"
+1. **Mod list without export:** activate another repository mod, wait a minute. The pause menu shows "Restore mods (n+1)" with today's date. Log line `Mod list updated: n mods`
+2. **Switch off:** deactivate that mod in the mod manager, wait a minute → the count goes down again
+3. **Restore mods on Boosteroid:** new session, activate this mod, click "Restore mods" → the mods download and are active. Not logged in: what happens?
+4. **Machine name:** type "Boosteroid", "Set name" → heading "This machine: Boosteroid". Export → "Current: … · Boosteroid". Tick "Fresh machines use this name"
+5. **Fresh session:** new Boosteroid session, activate the mod → "This machine: Boosteroid" without typing; new backups carry the name
+6. **Normal PC:** after a restart the own name stays (local file `settings/settingsCloudSync_state.json`)
+7. Pause menu: typing in the machine name field fires no game actions

@@ -17,22 +17,23 @@
 -- (after an import or export). Checks every 60 s, when settings change and on exit.
 --          settingsCloudSync.setProfile('Laptop')
 --          settingsCloudSync.renameProfile('Laptop', 'Notebook') / settingsCloudSync.deleteProfile('Notebook')
--- Quick access (radial menu): entry "Settings Cloud Sync" with export, import, undo and older backups
 -- Pause menu: tab "Mods" > "Settings Cloud Sync" with all settings of the app (ui/ui-vue/mods/settingsCloudSync/)
 -- History: before each export the previous backup moves to history/<backupId>/, the last 3 are kept.
 --          settingsCloudSync.restoreBackup('<backupId>') restores one of them and makes it the current one
 -- Undo: every import saves the local files first, settingsCloudSync.undoImport() puts them back
--- Mod list: each export remembers the active repository mods, settingsCloudSync.restoreMods()
+-- Mod list: the active repository mods are remembered (checked every 60 s), settingsCloudSync.restoreMods()
 --          subscribes the missing ones again (cloud gaming starts without mods). Never automatic.
+-- Machine name: shown with backups. settingsCloudSync.setMachineName('Laptop') (local only);
+--          settingsCloudSync.setFreshMachineName(true) lets fresh machines (cloud gaming) use it too
 
 local M = {}
 
-local version = '0.7' -- shown in the UI; keep in sync with app.json (build.sh checks this)
+local version = '0.8' -- shown in the UI; keep in sync with app.json (build.sh checks this)
 local logTag = 'settingsCloudSync'
 local cloudRoot = '/settings/cloud/settingsCloudSync/'
 local configPath = cloudRoot .. 'config.json' -- lives in the cloud so the option reaches a fresh machine
 local sharedRoot = cloudRoot .. 'shared/' -- key bindings shared by all profiles (option sharedControls)
-local modListPath = cloudRoot .. 'mods.json' -- active repository mods at the last export
+local modListPath = cloudRoot .. 'mods.json' -- remembered repository mods for "Restore mods"
 local statePath = '/settings/settingsCloudSync_state.json' -- local only: profile and last active backups
 local defaultProfile = 'Default' -- uses the v0.3 paths so existing backups stay valid
 local preImportRoot = '/settings/settingsCloudSync_preImport' -- local backup before every import (undo)
@@ -58,6 +59,8 @@ local categories = {
 
 local autoImportPending = false
 local autoExportTimer = 0
+local modListTimer = 0
+local freshSession = false -- no local state at start: fresh machine, e.g. a cloud gaming session
 local baseline = nil -- file contents after the last import/export, for auto-export
 local archivedThisSession = {} -- per unit: automatic exports add a history entry only once per session
 local warnedLarge = {} -- warn about a too big file only once per session
@@ -232,10 +235,15 @@ local function readManifest(root)
   return manifest
 end
 
--- Machine name shown with backups; often random on cloud gaming machines
+-- Machine name shown with backups: the name set on this machine, else the Windows name, else on a
+-- fresh machine the name for fresh machines from the cloud (cloud gaming has no name of its own)
 local function machineName()
+  local own = readState().machineName
+  if type(own) == 'string' and own ~= '' then return own end
   local ok, name = pcall(os.getenv, 'COMPUTERNAME')
   if ok and type(name) == 'string' and name ~= '' then return name end
+  local fresh = readConfig().freshMachineName
+  if freshSession and type(fresh) == 'string' and fresh ~= '' then return fresh end
   return 'unknown PC'
 end
 
@@ -385,23 +393,6 @@ local function unitMatches(unit, manifest, snap)
   return true
 end
 
--- Remembers the active repository mods (repo ID = tagid), except this mod; for "Restore mods"
-local function saveModList()
-  if not core_modmanager or not core_modmanager.getMods then return end
-  local ok, mods = pcall(core_modmanager.getMods)
-  if not ok or type(mods) ~= 'table' then return end
-  local list = {}
-  for name, entry in pairs(mods) do
-    local tagid = type(entry) == 'table' and entry.active and type(entry.modData) == 'table' and entry.modData.tagid
-    if type(tagid) == 'string' and tagid ~= '' and tagid ~= ownTagid and not name:lower():find('settings_cloud_sync', 1, true) then
-      table.insert(list, { id = tagid, name = entry.modData.title or name })
-    end
-  end
-  if #list == 0 then return end -- a fresh session without mods never overwrites the list
-  table.sort(list, function(a, b) return a.name:lower() < b.name:lower() end)
-  jsonWriteFile(modListPath, { created = now(), machine = machineName(), mods = list }, true)
-end
-
 local function readModList()
   local data = jsonReadFile(modListPath)
   local list = {}
@@ -409,6 +400,45 @@ local function readModList()
     if type(m) == 'table' and type(m.id) == 'string' and m.id:match('^[%w]+$') then table.insert(list, m) end
   end
   return list, type(data) == 'table' and data.created or nil
+end
+
+-- Updates the remembered repository mods (repo ID = tagid), except this mod; for "Restore mods".
+-- Active mods are added, mods switched off on this machine are removed. Mods that are not
+-- installed stay in the list: a fresh cloud session starts without them or is still downloading.
+-- Writes only on a change; returns true then
+local function saveModList()
+  if not core_modmanager or not core_modmanager.getMods then return false end
+  local ok, mods = pcall(core_modmanager.getMods)
+  if not ok or type(mods) ~= 'table' then return false end
+  local installed, active = {}, {}
+  for name, entry in pairs(mods) do
+    local tagid = type(entry) == 'table' and type(entry.modData) == 'table' and entry.modData.tagid
+    if type(tagid) == 'string' and tagid:match('^[%w]+$') and tagid ~= ownTagid
+      and not name:lower():find('settings_cloud_sync', 1, true) then
+      installed[tagid] = true
+      if entry.active then active[tagid] = tostring(entry.modData.title or name) end
+    end
+  end
+  local list, seen, changed = {}, {}, false
+  for _, m in ipairs(readModList()) do
+    if active[m.id] or not installed[m.id] then
+      table.insert(list, m)
+      seen[m.id] = true
+    else
+      changed = true -- switched off here
+    end
+  end
+  for id, name in pairs(active) do
+    if not seen[id] then
+      table.insert(list, { id = id, name = name })
+      changed = true
+    end
+  end
+  if not changed then return false end
+  table.sort(list, function(a, b) return tostring(a.name):lower() < tostring(b.name):lower() end)
+  jsonWriteFile(modListPath, { created = now(), machine = machineName(), mods = list }, true)
+  log('I', logTag, string.format('Mod list updated: %d mods', #list))
+  return true
 end
 
 -- Repo IDs of all installed mods (active or not)
@@ -432,7 +462,7 @@ local function restoreMods()
   end
   local list = readModList()
   if #list == 0 then
-    notify('error', 'No mod list saved yet. Export once with your mods active.')
+    notify('error', 'No mod list saved yet. It fills itself within a minute while your mods are active.')
     return
   end
   local installed = installedModIds()
@@ -855,6 +885,34 @@ local function deleteProfile(name)
   notify('success', string.format('Profile "%s" deleted.', profile))
 end
 
+-- Name of this machine, stored locally; empty removes it
+local function setMachineName(name)
+  local clean = cleanProfileName(name)
+  local state = readState()
+  local old = state.machineName
+  state.machineName = clean
+  jsonWriteFile(statePath, state, true)
+  -- Fresh machines follow when they used the old name
+  local config = readConfig()
+  if old and config.freshMachineName == old then
+    config.freshMachineName = clean
+    jsonWriteFile(configPath, config, true)
+  end
+  notify('success', clean and string.format('This machine is now called "%s".', clean) or 'Machine name removed.')
+end
+
+-- Fresh machines (no local state, e.g. every cloud gaming session) use this machine's name
+local function setFreshMachineName(enabled)
+  local config = readConfig()
+  local own = readState().machineName
+  if enabled and not own then
+    notify('error', 'Give this machine a name first.')
+    return
+  end
+  config.freshMachineName = enabled and own or nil
+  jsonWriteFile(configPath, config, true)
+end
+
 -- 'none': no backup yet, 'synced': local files equal the cloud backup, 'changed': they differ
 local function syncState(config)
   local snap = snapshot()
@@ -914,6 +972,9 @@ local function getStatus()
     undo = undo and string.format('%s (%d files)', undo.created or '?', #undo.saved + #undo.added) or nil,
     modCount = #mods,
     modsCreated = modsCreated,
+    machineName = machineName(),
+    ownMachineName = readState().machineName,
+    freshMachineName = config.freshMachineName,
     categories = {},
   }
   for _, cat in ipairs(categories) do
@@ -930,6 +991,7 @@ local function getStatus()
 end
 
 local function onExtensionLoaded()
+  freshSession = not FS:fileExists(statePath)
   autoImportPending = true
 end
 
@@ -940,6 +1002,11 @@ local function onUpdate(dtReal)
     autoImportIfNeeded()
     if not baseline and readConfig().autoExport then baseline = snapshot() end
     return
+  end
+  modListTimer = modListTimer + (tonumber(dtReal) or 0)
+  if modListTimer >= autoExportInterval then
+    modListTimer = 0
+    pcall(saveModList)
   end
   autoExportTimer = autoExportTimer + (tonumber(dtReal) or 0)
   if autoExportTimer < autoExportInterval then return end
@@ -954,6 +1021,7 @@ end
 
 -- Save the last changes on exit
 local function onExit()
+  pcall(saveModList)
   local ok, err = pcall(autoExportIfChanged)
   if not ok then log('E', logTag, 'Auto-export on exit failed: ' .. tostring(err)) end
 end
@@ -969,6 +1037,8 @@ M.setSharedControls = setSharedControls
 M.setProfile = setProfile
 M.renameProfile = renameProfile
 M.deleteProfile = deleteProfile
+M.setMachineName = setMachineName
+M.setFreshMachineName = setFreshMachineName
 M.getStatus = getStatus
 M.onExtensionLoaded = onExtensionLoaded
 M.onUpdate = onUpdate

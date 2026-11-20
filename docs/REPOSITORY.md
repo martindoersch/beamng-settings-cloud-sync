@@ -107,7 +107,17 @@ Only text files from your own user folder are copied; nothing leaves your
 Steam account.
 ```
 
-## Change note v0.7 (for "Post resource update")
+## Change note v0.8 (for "Post resource update")
+
+```
+v0.8
+- The mod list for "Restore mods" now updates by itself while you play;
+  no export needed. Mods you switch off are removed from it.
+- Name your machines: backups show e.g. "Boosteroid" or "Laptop" instead
+  of "unknown PC". Cloud gaming sessions can use a name too.
+```
+
+## Change note v0.7 (published 2026-11-11)
 
 ```
 v0.7

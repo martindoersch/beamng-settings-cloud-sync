@@ -17,6 +17,14 @@ angular.module('beamng.apps')
           '<div style="opacity:0.6;">e.g. one per PC; only this machine switches</div>' +
           '<div ng-show="missingProfile" style="color:#ffcc80;">Profile \'{{missingProfile}}\' was deleted, this machine uses Default.</div>' +
         '</div>' +
+        '<div style="margin-bottom:6px;">This machine: <b>{{machineName}}</b> ' +
+          '<input type="text" ng-model="newMachine" placeholder="name" maxlength="32" style="width:80px;"> ' +
+          '<button ng-click="setMachineName()" ng-disabled="!newMachine">Set name</button>' +
+          '<label style="display:block; margin-top:3px;">' +
+            '<input type="checkbox" ng-model="freshUsesThis" ng-disabled="!ownMachineName" ng-change="setOption(\'setFreshMachineName\', freshUsesThis)"> Fresh machines use this name' +
+            '<div style="opacity:0.6; margin-left:20px;">cloud gaming sessions have no name of their own; shown with backups</div>' +
+          '</label>' +
+        '</div>' +
         '<label ng-repeat="c in categories" style="display:block; margin-bottom:3px;">' +
           '<input type="checkbox" ng-model="selection[c.id]" ng-change="saveSelection()"> {{c.label}}' +
           '<div style="opacity:0.6; margin-left:20px;">{{c.shared ? "shared by all profiles, " : ""}}{{c.backupDate ? (c.backupCount + (c.backupCount === 1 ? " file, " : " files, ") + c.backupDate) : "no backup yet"}}</div>' +
@@ -48,7 +56,7 @@ angular.module('beamng.apps')
         '</label>' +
         '<div style="margin-top:6px;" ng-show="modCount">' +
           '<button ng-click="call(\'restoreMods()\')">Restore mods ({{modCount}})</button>' +
-          '<div style="opacity:0.6;">subscribes the repository mods that were active at the export of {{modsCreated}}; needs the BeamNG login</div>' +
+          '<div style="opacity:0.6;">subscribes the repository mods you had active (list updated {{modsCreated}}); needs the BeamNG login</div>' +
         '</div>' +
         '<div style="opacity:0.6; margin-top:6px;">Tip: also in the pause menu (ESC) under Mods.</div>' +
         '</div>' +
@@ -66,6 +74,7 @@ angular.module('beamng.apps')
       scope.profiles = []
       scope.profile = ''
       scope.newProfile = ''
+      scope.newMachine = ''
       scope.history = []
       scope.restore = { id: '' }
       scope.confirmDelete = false
@@ -103,6 +112,9 @@ angular.module('beamng.apps')
             scope.undo = data.undo
             scope.modCount = data.modCount || 0
             scope.modsCreated = data.modsCreated
+            scope.machineName = data.machineName
+            scope.ownMachineName = data.ownMachineName
+            scope.freshUsesThis = !!data.ownMachineName && data.freshMachineName === data.ownMachineName
             scope.history = Array.isArray(data.history) ? data.history : []
             // Preselect the newest older backup, so the shown entry is also the one Restore uses
             if (!scope.history.some(function (b) { return b.id === scope.restore.id })) {
@@ -171,6 +183,11 @@ angular.module('beamng.apps')
       scope.restoreLabel = function () {
         var b = scope.history.filter(function (h) { return h.id === scope.restore.id })[0]
         return b ? b.label : ''
+      }
+
+      scope.setMachineName = function () {
+        scope.call('setMachineName("' + cleanName(scope.newMachine) + '")')
+        scope.newMachine = ''
       }
 
       scope.addProfile = function () {

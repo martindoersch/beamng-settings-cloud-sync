@@ -233,6 +233,53 @@ check(#subscribed == 1 and subscribed[1] == 'MAPID', 'missing mod gets subscribe
 m.exportAll()
 check(#jsonReadFile(root .. 'mods.json').mods == 1, 'mod list kept when no repo mod is active')
 
+print('== mod list follows the active mods')
+local modSet = {}
+core_modmanager.getMods = function() return modSet end
+local function repoMod(id, active) return { active = active, modID = id, modData = { tagid = id, title = id } } end
+local function listIds()
+  local ids = {}
+  for _, e in ipairs(jsonReadFile(root .. 'mods.json').mods) do ids[e.id] = true end
+  return ids
+end
+modSet = { map = repoMod('MAPID', true), truck = repoMod('TRUCKID', true) }
+m.onUpdate(60)
+check(listIds().TRUCKID and listIds().MAPID, 'newly activated mod added without an export')
+local saved = jsonReadFile(root .. 'mods.json')
+saved.created = 'marker'
+jsonWriteFile(root .. 'mods.json', saved)
+m.onUpdate(60)
+check(jsonReadFile(root .. 'mods.json').created == 'marker', 'unchanged mods: list not rewritten')
+modSet = { map = repoMod('MAPID', true), truck = repoMod('TRUCKID', false) }
+m.onUpdate(60)
+check(listIds().MAPID and not listIds().TRUCKID, 'mod switched off here is removed')
+modSet = { truck = repoMod('TRUCKID', true) }
+m.onUpdate(60)
+check(listIds().MAPID and listIds().TRUCKID, 'mod not installed (fresh session) stays in the list')
+modSet = {}
+m.onExit()
+check(listIds().MAPID and listIds().TRUCKID, 'session without mods keeps the list')
+
+print('== machine name')
+m.setMachineName('Gaming PC')
+check(m.getStatus().machineName == 'Gaming PC', 'own machine name shown')
+m.exportAll()
+check(jsonReadFile(root .. 'manifest.json').machine == 'Gaming PC', 'backup carries the machine name')
+m.setFreshMachineName(true)
+check(m.getStatus().freshMachineName == 'Gaming PC', 'fresh machines use this name')
+m.setMachineName('Boosteroid')
+check(m.getStatus().freshMachineName == 'Boosteroid', 'fresh machine name follows a rename')
+newSession()
+m = loadExt()
+m.onUpdate(0)
+check(m.getStatus().machineName == 'Boosteroid' or os.getenv('COMPUTERNAME'), 'fresh session uses the name for fresh machines')
+check(m.getStatus().ownMachineName == nil, 'fresh session has no own name')
+toasts = {}
+m.setFreshMachineName(true)
+check(#toasts == 1 and toasts[1].type == 'error', 'fresh name needs an own name first')
+m.setMachineName('')
+check(m.getStatus().ownMachineName == nil, 'empty name removes it')
+
 print('== invalid input')
 m.setProfile('../x')
 check(count(root .. 'profiles/..') == 0, 'path traversal sanitized')

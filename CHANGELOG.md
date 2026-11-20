@@ -1,6 +1,12 @@
 # Changelog
 
-## v0.7 (2026-11-10, ready for upload)
+## v0.8 (2026-11-11, uploaded, waiting for approval)
+
+- Mod list follows your active repository mods by itself (checked every minute and on exit), no export needed. Mods you switch off are removed; mods missing in a fresh session stay in the list
+- Machine name: give each machine a name (shown with backups instead of "unknown PC"); optionally fresh machines such as cloud gaming sessions use it too
+- Repository graphic: concept tiles instead of the UI app mock-up, plus an in-game screenshot
+
+## v0.7 (2026-11-10, published 2026-11-11)
 
 - Removed the radial menu entries (labels did not show in 0.40.5); everything is in the pause menu
 - UI app: arrows instead of dropdowns for profile and older backups (dropdowns did not open in game)
